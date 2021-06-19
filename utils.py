@@ -44,6 +44,9 @@ class DataModule:
                 if (file_index % int(per)) == 0:
                     print(f"{label_index + 1}번 째 디렉터리의 파일 {file_index}개 완료, {(file_index / per)}%")
 
+        features = np.array(features)
+        norm_features = np.array(norm_features)
+        labels = np.array(labels)
         print(np.shape(features), np.shape(norm_features), np.shape(labels))
 
         return features, norm_features, labels
