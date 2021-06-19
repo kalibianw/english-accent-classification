@@ -42,7 +42,7 @@ class DataModule:
                 labels.append(label_index)
 
                 if (file_index % int(per)) == 0:
-                    print(f"현재 {file_index}개 완료, {(file_index / per)}%")
+                    print(f"{label_index + 1}번 째 디렉터리의 파일 {file_index}개 완료, {(file_index / per)}%")
 
         print(np.shape(features), np.shape(norm_features), np.shape(labels))
 
