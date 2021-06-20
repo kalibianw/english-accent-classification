@@ -15,7 +15,7 @@ class DataModule:
         self.TRAIN_DATA_DIR_PATH = data_dir_path + training_dir_name + "/"
         self.TEST_DATA_DIR_PATH = data_dir_path + test_dir_name + "/"
 
-    def training_data_preprocessing(self, cut_sec: int, n_mfcc: int):
+    def training_data_preprocessing(self, cut_sec: int, n_mfcc: int, sr=48000):
         label_list = os.listdir(self.TRAIN_DATA_DIR_PATH)
 
         features = list()
@@ -26,7 +26,7 @@ class DataModule:
             per = len(flist) / 100
             for file_index, fname in enumerate(flist):
                 audio_path = self.TRAIN_DATA_DIR_PATH + label + "/" + fname
-                audio, sr = librosa.load(path=audio_path, sr=int(mediainfo(audio_path)["sample_rate"]))
+                audio, sr = librosa.load(path=audio_path, sr=sr)
 
                 if np.shape(audio)[0] < sr * cut_sec:
                     expand_arr = np.zeros(shape=((sr * cut_sec) - np.shape(audio)[0]), dtype="float32")
