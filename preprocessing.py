@@ -1,9 +1,14 @@
 from utils import DataModule
 import numpy as np
+import sys
 
 DATA_DIR_PATH = "D:/AI/data/english accent classification/"
 CUT_SEC = 10
-N_MFCC = 80
+try:
+    N_MFCC = int(sys.argv[1])
+except IndexError:
+    print(f"sys.argv[1] is empty. please check the argument.")
+    exit()
 SR = 48000
 
 dm = DataModule(data_dir_path=DATA_DIR_PATH, training_dir_name="train", test_dir_name="test")
