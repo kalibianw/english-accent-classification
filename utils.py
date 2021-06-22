@@ -18,7 +18,13 @@ class DataModule:
         self.TRAIN_DATA_DIR_PATH = data_dir_path + training_dir_name + "/"
         self.TEST_DATA_DIR_PATH = data_dir_path + test_dir_name + "/"
 
-    def training_data_preprocessing(self, cut_sec: int, n_mfcc: int, sr=48000):
+    def training_data_preprocessing(self, cut_sec: int, n_mfcc: int, sr=48000, splited=0):
+        """
+        :param cut_sec: Argument for how many seconds to cut the audio file.
+        :param n_mfcc: Argument for librosa.feature.mfcc.
+        :param sr: Sample rate of audio file.
+        :param splited: Argument for how many audio files to use per label. default=0(Using all files)
+        """
         label_list = os.listdir(self.TRAIN_DATA_DIR_PATH)
 
         features = list()
@@ -27,7 +33,7 @@ class DataModule:
         for label_index, label in enumerate(label_list):
             flist = os.listdir(self.TRAIN_DATA_DIR_PATH + label)
             per = len(flist) / 100
-            for file_index, fname in enumerate(flist):
+            for file_index, fname in enumerate(flist[:splited] if splited != 0 else flist):
                 audio_path = self.TRAIN_DATA_DIR_PATH + label + "/" + fname
                 audio, sr = librosa.load(path=audio_path, sr=sr)
 
@@ -54,12 +60,18 @@ class DataModule:
 
         return features, norm_features, labels
 
-    def test_data_preprocessing(self, cut_sec: int, n_mfcc: int, sr=48000):
+    def test_data_preprocessing(self, cut_sec: int, n_mfcc: int, sr=48000, splited=0):
+        """
+        :param cut_sec: Argument for how many seconds to cut the audio file.
+        :param n_mfcc: Argument for librosa.feature.mfcc.
+        :param sr: Sample rate of audio file.
+        :param splited: Argument for how many audio files to use per label. default=0(Using all files)
+        """
         features = list()
         norm_features = list()
         flist = os.listdir(self.TEST_DATA_DIR_PATH)
         per = len(flist) / 100
-        for file_index, fname in enumerate(flist):
+        for file_index, fname in enumerate(flist[:splited] if splited != 0 else flist):
             audio_path = self.TRAIN_DATA_DIR_PATH + fname
             audio, sr = librosa.load(path=audio_path, sr=sr)
 
