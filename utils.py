@@ -54,6 +54,36 @@ class DataModule:
 
         return features, norm_features, labels
 
+    def test_data_preprocessing(self, cut_sec: int, n_mfcc: int, sr=48000):
+        features = list()
+        norm_features = list()
+        flist = os.listdir(self.TEST_DATA_DIR_PATH)
+        per = len(flist) / 100
+        for file_index, fname in enumerate(flist):
+            audio_path = self.TRAIN_DATA_DIR_PATH + fname
+            audio, sr = librosa.load(path=audio_path, sr=sr)
+
+            if np.shape(audio)[0] < sr * cut_sec:
+                expand_arr = np.zeros(shape=((sr * cut_sec) - np.shape(audio)[0]), dtype="float32")
+                audio = np.append(audio, expand_arr)
+            elif np.shape(audio)[0] > sr * cut_sec:
+                cutted_arr = np.split(ary=audio, indices_or_sections=(sr * cut_sec,))
+                audio = cutted_arr[0]
+
+            audio_mfcc = librosa.feature.mfcc(audio, sr=sr, n_mfcc=n_mfcc)
+            features.append(audio_mfcc)
+            audio_mfcc_norm = librosa.util.normalize(audio_mfcc)
+            norm_features.append(audio_mfcc_norm)
+
+            if (file_index % int(per)) == 0:
+                print(f"파일 {file_index}개 완료, {(file_index / per)}%")
+
+        features = np.array(features)
+        norm_features = np.array(norm_features)
+        print(np.shape(features), np.shape(norm_features))
+
+        return features, norm_features
+
 
 class TrainModule:
     def __init__(self, batch_size: int, ckpt_path: str, model_path: str, input_shape: tuple, log_dir: str):
