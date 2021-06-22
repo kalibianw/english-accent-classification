@@ -1,18 +1,20 @@
+import pandas as pd
 import numpy as np
-from tensorflow.keras import models
 
-N_MFCCS = [40, 80]
-BATCH_SIZE = 32
-MODEL_PATHS = [
-    "D:/AI/model/english-accent-classification/training_dataset_cut-sec-10_n-mfcc-40_sr-48000.h5",
-    "D:/AI/model/english-accent-classification/splited_training_dataset_cut-sec-10_n-mfcc-80_sr-48000_2500.h5"
-]
+result_file_paths = ["npz/test_dataset_cut-sec-10_n-mfcc-40_sr-48000_result.npz",
+                     "npz/test_dataset_cut-sec-10_n-mfcc-80_sr-48000_result.npz"]
 
-for index, n_mfcc in enumerate(N_MFCCS):
-    npz_file_path = f"test_dataset_cut-sec-10_n-mfcc-{n_mfcc}_sr-48000.npz"
-    nploader = np.load(npz_file_path)
-    norm_features = np.expand_dims(nploader["norm_features"], axis=-1)
-    model = models.load_model(MODEL_PATHS[index])
-    result = model.predict(norm_features, batch_size=BATCH_SIZE, verbose=1)
-    print(result)
-    print(np.shape(result))
+for result_file_index, result_file_path in enumerate(result_file_paths):
+    nploader = np.load(result_file_path)
+    result = nploader["result"]
+    csv_file_path = f"D:/AI/data/english accent classification/submission_{result_file_index}.csv"
+    id_array = np.arange(1, 6101)
+    d = {"id": id_array,
+         "africa": result[:, 0],
+         "australia": result[:, 1],
+         "canada": result[:, 2],
+         "england": result[:, 3],
+         "hongkong": result[:, 4],
+         "us": result[:, 5]}
+    df = pd.DataFrame(d)
+    df.to_csv(csv_file_path, index=False)
