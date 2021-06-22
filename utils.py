@@ -60,19 +60,18 @@ class DataModule:
 
         return features, norm_features, labels
 
-    def test_data_preprocessing(self, cut_sec: int, n_mfcc: int, sr=48000, splited=0):
+    def test_data_preprocessing(self, cut_sec: int, n_mfcc: int, sr=48000):
         """
         :param cut_sec: Argument for how many seconds to cut the audio file.
         :param n_mfcc: Argument for librosa.feature.mfcc.
         :param sr: Sample rate of audio file.
-        :param splited: Argument for how many audio files to use per label. default=0(Using all files)
         """
         features = list()
         norm_features = list()
         flist = os.listdir(self.TEST_DATA_DIR_PATH)
         per = len(flist) / 100
-        for file_index, fname in enumerate(flist[:splited] if splited != 0 else flist):
-            audio_path = self.TRAIN_DATA_DIR_PATH + fname
+        for file_index, fname in enumerate(flist):
+            audio_path = self.TEST_DATA_DIR_PATH + fname
             audio, sr = librosa.load(path=audio_path, sr=sr)
 
             if np.shape(audio)[0] < sr * cut_sec:
