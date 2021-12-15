@@ -7,7 +7,7 @@ import sys
 import os
 
 try:
-    NPZ_PATH = f"npz/{sys.argv[1]}"
+    NPZ_PATH = f"D:/AI/npz/english-accent-classification/{sys.argv[1]}"
 except IndexError:
     print(f"IndexError. please check the argument.")
     exit()
